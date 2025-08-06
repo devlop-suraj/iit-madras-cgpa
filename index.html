@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IIT Madras GPA/CGPA Calculator</title>
+<style>
+    :root {
+        /* Light mode colors */
+        --bg-color: #f5f5f5;
+        --container-bg: #fff;
+        --text-color: #333;
+        --text-secondary: #555;
+        --text-muted: #666;
+        --border-color: #ccc;
+        --border-light: #e0e0e0;
+        --border-medium: #ddd;
+        --form-bg: #fafafa;
+        --shadow: rgba(0, 0, 0, 0.1);
+        --shadow-medium: rgba(0, 0, 0, 0.1);
+    }
+    
+    [data-theme="dark"] {
+        /* Dark mode colors */
+        --bg-color: #1a1a1a;
+        --container-bg: #2d2d2d;
+        --text-color: #e0e0e0;
+        --text-secondary: #b0b0b0;
+        --text-muted: #888;
+        --border-color: #555;
+        --border-light: #444;
+        --border-medium: #666;
+        --form-bg: #333;
+        --shadow: rgba(0, 0, 0, 0.3);
+        --shadow-medium: rgba(0, 0, 0, 0.2);
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: var(--bg-color);
+        margin: 0;
+        padding: 0;
+        color: var(--text-color);
+        transition: background-color 0.3s ease, color 0.3s ease;
+        position: relative;
+        overflow-x: hidden;
+    }
+    
+    .stars-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+    }
+    
+    .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: white;
+        border-radius: 50%;
+        opacity: 0.8;
+        animation: twinkle 3s ease-in-out infinite alternate;
+    }
+    
+    .star.small {
+        width: 1px;
+        height: 1px;
+        animation-duration: 2s;
+    }
+    
+    .star.medium {
+        width: 2px;
+        height: 2px;
+        animation-duration: 3s;
+    }
+    
+    .star.large {
+        width: 3px;
+        height: 3px;
+        animation-duration: 4s;
+        box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+    }
+    
+    .star.moving {
+        animation: moveStars 20s linear infinite, twinkle 3s ease-in-out infinite alternate;
+    }
+    
+    [data-theme="dark"] .star {
+        background: #fff;
+        box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+    }
+    
+    [data-theme="light"] .star {
+        background: #666;
+        opacity: 0.4;
+        box-shadow: 0 0 2px rgba(102, 102, 102, 0.3);
+    }
+    
+    @keyframes twinkle {
+        0% { opacity: 0.3; }
+        50% { opacity: 1; }
+        100% { opacity: 0.3; }
+    }
+    
+    @keyframes moveStars {
+        0% { transform: translateX(-100px) translateY(-100px); }
+        100% { transform: translateX(100vw) translateY(100vh); }
+    }
+    
+    .shooting-star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: linear-gradient(45deg, #fff, transparent);
+        border-radius: 50%;
+        animation: shootingStar 3s ease-out infinite;
+        opacity: 0;
+    }
+    
+    [data-theme="dark"] .shooting-star {
+        background: linear-gradient(45deg, #fff, #64b5f6, transparent);
+        box-shadow: 0 0 10px #fff, 0 0 20px #64b5f6;
+    }
+    
+    [data-theme="light"] .shooting-star {
+        background: linear-gradient(45deg, #666, #999, transparent);
+        opacity: 0.6;
+    }
+    
+    @keyframes shootingStar {
+        0% {
+            opacity: 0;
+            transform: translateX(-100px) translateY(-100px) scale(0);
+        }
+        10% {
+            opacity: 1;
+            transform: translateX(0px) translateY(0px) scale(1);
+        }
+        90% {
+            opacity: 1;
+            transform: translateX(300px) translateY(300px) scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: translateX(400px) translateY(400px) scale(0);
+        }
+    }
+    .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        background-color: var(--container-bg);
+        box-shadow: 0 2px 4px var(--shadow);
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+        backdrop-filter: blur(10px);
+    }
+    [data-theme="dark"] .container {
+        background-color: rgba(45, 45, 45, 0.95);
+        backdrop-filter: blur(15px);
+    }
+    [data-theme="light"] .container {
+        background-color: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+    }
+    .theme-toggle {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: 2px solid var(--border-color);
+        border-radius: 50px;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 16px;
+        color: var(--text-color);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .theme-toggle:hover {
+        transform: scale(1.05);
+        border-color: var(--text-color);
+    }
+    #logo {
+        margin-bottom: 20px;
+    }
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: var(--text-color);
+    }
+    .form-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+        background-color: var(--form-bg);
+        transition: all 0.3s ease;
+    }
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+        color: var(--text-secondary);
+    }
+    select, input[type="number"] {
+        margin-bottom: 10px;
+        padding: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        background-color: var(--container-bg);
+        color: var(--text-color);
+        transition: all 0.3s ease;
+    }
+    select:focus, input[type="number"]:focus {
+        outline: none;
+        border-color: #4CAF50;
+        box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+    }
+    select {
+        width: 50%;
+    }
+    .course-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid var(--border-medium);
+        border-radius: 5px;
+        background-color: var(--container-bg);
+        transition: all 0.3s ease;
+    }
+    .course-row label {
+        margin: 0;
+        min-width: 120px;
+        color: var(--text-color);
+    }
+    .course-row input, .course-row select {
+        margin: 0;
+        flex: 1;
+    }
+    .button-group {
+        margin: 20px 0;
+    }
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+    button:hover {
+        background-color: #45a049;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px var(--shadow-medium);
+    }
+    .reset-btn {
+        background-color: #f44336;
+    }
+    .reset-btn:hover {
+        background-color: #da190b;
+    }
+    .add-course-btn {
+        background-color: #2196F3;
+    }
+    .add-course-btn:hover {
+        background-color: #0b7dda;
+    }
+    .remove-course-btn {
+        background-color: #ff9800;
+        padding: 5px 10px;
+        font-size: 12px;
+        margin-left: 10px;
+    }
+    .remove-course-btn:hover {
+        background-color: #e68900;
+    }
+    #result {
+        margin-top: 20px;
+    }
+    .result-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+    .result-box {
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 4px var(--shadow);
+        transition: all 0.3s ease;
+    }
+    .result-box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px var(--shadow-medium);
+    }
+    .result-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-align: center;
+        color: white;
+        padding: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 8px;
+        box-shadow: 0 4px 6px var(--shadow);
+        transition: all 0.3s ease;
+    }
+    [data-theme="dark"] .result-title {
+        background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+    }
+    .semester-gpa {
+        background-color: #e3f2fd;
+        color: #0d47a1;
+        border: 2px solid #2196f3;
+    }
+    [data-theme="dark"] .semester-gpa {
+        background-color: #1a2332;
+        color: #64b5f6;
+        border-color: #1976d2;
+    }
+    .semester-credits {
+        background-color: #f3e5f5;
+        color: #4a148c;
+        border: 2px solid #9c27b0;
+    }
+    [data-theme="dark"] .semester-credits {
+        background-color: #2a1b2e;
+        color: #ba68c8;
+        border-color: #7b1fa2;
+    }
+    .previous-credits {
+        background-color: #fff3e0;
+        color: #e65100;
+        border: 2px solid #ff9800;
+    }
+    [data-theme="dark"] .previous-credits {
+        background-color: #2e2419;
+        color: #ffb74d;
+        border-color: #f57c00;
+    }
+    .previous-cgpa {
+        background-color: #fce4ec;
+        color: #880e4f;
+        border: 2px solid #e91e63;
+    }
+    [data-theme="dark"] .previous-cgpa {
+        background-color: #2e1a22;
+        color: #f06292;
+        border-color: #c2185b;
+    }
+    .final-cgpa {
+        background-color: #e8f5e8;
+        color: #1b5e20;
+        border: 3px solid #4caf50;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    [data-theme="dark"] .final-cgpa {
+        background-color: #1e2e1e;
+        color: #81c784;
+        border-color: #388e3c;
+    }
+    .final-gpa {
+        background-color: #e8f5e8;
+        color: #1b5e20;
+        border: 3px solid #4caf50;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    [data-theme="dark"] .final-gpa {
+        background-color: #1e2e1e;
+        color: #81c784;
+        border-color: #388e3c;
+    }
+    .result-label {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 5px;
+        font-weight: normal;
+    }
+    .result-value {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .cgpa-message {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        border: 2px solid;
+        transition: all 0.3s ease;
+    }
+    .message-warning {
+        background-color: #ffebee;
+        color: #d32f2f;
+        border-color: #f44336;
+    }
+    [data-theme="dark"] .message-warning {
+        background-color: #2e1a1a;
+        color: #ef5350;
+        border-color: #d32f2f;
+    }
+    .message-success {
+        background-color: #e8f5e8;
+        color: #2e7d32;
+        border-color: #4caf50;
+    }
+    [data-theme="dark"] .message-success {
+        background-color: #1e2e1e;
+        color: #66bb6a;
+        border-color: #388e3c;
+    }
+    .message-excellent {
+        background-color: #e3f2fd;
+        color: #1976d2;
+        border-color: #2196f3;
+    }
+    [data-theme="dark"] .message-excellent {
+        background-color: #1a2332;
+        color: #42a5f5;
+        border-color: #1976d2;
+    }
+    .message-topper {
+        background-color: #fff3e0;
+        color: #f57c00;
+        border-color: #ff9800;
+        animation: glow 2s ease-in-out infinite alternate;
+    }
+    [data-theme="dark"] .message-topper {
+        background-color: #2e2419;
+        color: #ffb74d;
+        border-color: #f57c00;
+    }
+    @keyframes glow {
+        from { box-shadow: 0 0 5px #ff9800; }
+        to { box-shadow: 0 0 20px #ff9800; }
+    }
+    [data-theme="dark"] .message-topper {
+        animation: glow-dark 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow-dark {
+        from { box-shadow: 0 0 5px #f57c00; }
+        to { box-shadow: 0 0 20px #f57c00; }
+    }
+    .course-counter {
+        font-size: 16px;
+        margin: 10px 0;
+        color: var(--text-muted);
+    }
+    .input-group {
+        margin-bottom: 15px;
+    }
+</style>
+</head>
+<body>
+<div class="stars-container" id="starsContainer"></div>
+
+<div class="container">
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+        <span id="themeIcon">🌙</span>
+        <span id="themeText">Dark</span>
+    </button>
+    
+    <div id="logo">
+        <img src="https://www.iitm.ac.in/sites/default/files/logo_0.png" height="100px" width="100px" alt="IIT Madras Logo">
+    </div>
+    <h1>IIT Madras GPA/CGPA Calculator</h1>
+    
+    <div class="form-section">
+        <div class="input-group">
+            <label for="optionSelect">Select Calculation Type:</label>
+            <select id="optionSelect" onchange="showCGPAGradeInput()">
+                <option value="gpa">GPA (Grade Point Average)</option>
+                <option value="cgpa">CGPA (Cumulative Grade Point Average)</option>
+            </select>
+        </div>
+        
+        <div id="cgpaInputs"></div>
+        
+        <div class="course-counter">
+            <span id="courseCounter">Total Courses: 0</span>
+        </div>
+        
+        <div class="input-group">
+            <label for="numCoursesToAdd">Number of Courses to Add:</label>
+            <input type="number" id="numCoursesToAdd" min="1" max="20" value="1" placeholder="Enter number of courses">
+        </div>
+        
+        <div class="button-group">
+            <button class="add-course-btn" onclick="addMultipleCourses()">+ Add Course(s)</button>
+            <button class="reset-btn" onclick="resetForm()">🔄 Reset All</button>
+        </div>
+    </div>
+    
+    <div id="courseInputs"></div>
+    
+    <div class="button-group">
+        <button onclick="calculateGrade()">📊 Calculate</button>
+    </div>
+    
+    <div id="result"></div>
+</div>
+
+<script>
+let courseCount = 0;
+let courseData = {}; // Store course data to prevent loss
+
+// Stars animation functionality
+function createStars() {
+    const starsContainer = document.getElementById('starsContainer');
+    const numberOfStars = 100;
+    
+    // Clear existing stars
+    starsContainer.innerHTML = '';
+    
+    // Create static twinkling stars
+    for (let i = 0; i < numberOfStars; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        
+        // Random size
+        const sizes = ['small', 'medium', 'large'];
+        const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
+        star.classList.add(randomSize);
+        
+        // Random position
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        
+        // Random animation delay
+        star.style.animationDelay = Math.random() * 3 + 's';
+        
+        // Some stars move across screen
+        if (Math.random() > 0.7) {
+            star.classList.add('moving');
+            star.style.animationDelay = Math.random() * 20 + 's';
+        }
+        
+        starsContainer.appendChild(star);
+    }
+    
+    // Create occasional shooting stars
+    createShootingStars();
+}
+
+function createShootingStars() {
+    const starsContainer = document.getElementById('starsContainer');
+    
+    setInterval(() => {
+        if (Math.random() > 0.8) { // 20% chance every interval
+            const shootingStar = document.createElement('div');
+            shootingStar.className = 'shooting-star';
+            
+            // Random starting position on the edges
+            const side = Math.floor(Math.random() * 4);
+            switch(side) {
+                case 0: // top
+                    shootingStar.style.left = Math.random() * 100 + '%';
+                    shootingStar.style.top = '-10px';
+                    break;
+                case 1: // right
+                    shootingStar.style.left = window.innerWidth + 10 + 'px';
+                    shootingStar.style.top = Math.random() * 100 + '%';
+                    break;
+                case 2: // bottom
+                    shootingStar.style.left = Math.random() * 100 + '%';
+                    shootingStar.style.top = window.innerHeight + 10 + 'px';
+                    break;
+                case 3: // left
+                    shootingStar.style.left = '-10px';
+                    shootingStar.style.top = Math.random() * 100 + '%';
+                    break;
+            }
+            
+            starsContainer.appendChild(shootingStar);
+            
+            // Remove shooting star after animation
+            setTimeout(() => {
+                if (shootingStar.parentNode) {
+                    shootingStar.parentNode.removeChild(shootingStar);
+                }
+            }, 3000);
+        }
+    }, 2000); // Check every 2 seconds
+}
+
+// Theme functionality
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    updateThemeButton(newTheme);
+    
+    // Save theme preference
+    localStorage.setItem('theme', newTheme);
+}
+
+function updateThemeButton(theme) {
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+    
+    if (theme === 'dark') {
+        themeIcon.textContent = '☀️';
+        themeText.textContent = 'Light';
+    } else {
+        themeIcon.textContent = '🌙';
+        themeText.textContent = 'Dark';
+    }
+}
+
+function initializeTheme() {
+    // Check for saved theme preference or default to light mode
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeButton(savedTheme);
+    
+    // Create stars after theme is set
+    createStars();
+}
+
+function showCGPAGradeInput() {
+    var option = document.getElementById("optionSelect").value;
+    var cgpaInputs = document.getElementById("cgpaInputs");
+
+    if (option === "cgpa") {
+        cgpaInputs.innerHTML = `
+            <div class="input-group">
+                <label for="completedCredit">Completed Credits:</label>
+                <input type="number" id="completedCredit" step="0.1" placeholder="Enter your completed credits">
+            </div>
+            <div class="input-group">
+                <label for="currentCGPA">Current CGPA:</label>
+                <input type="number" id="currentCGPA" step="0.01" min="0" max="10" placeholder="Enter your current CGPA">
+            </div>
+        `;
+    } else {
+        cgpaInputs.innerHTML = '';
+    }
+}
+
+function addCourse() {
+    courseCount++;
+    updateCourseCounter();
+    
+    var courseInputsDiv = document.getElementById("courseInputs");
+    var courseDiv = document.createElement('div');
+    courseDiv.className = 'course-row';
+    courseDiv.id = `course-${courseCount}`;
+    
+    courseDiv.innerHTML = `
+        <label>Course ${courseCount}:</label>
+        <input type="number" id="credit${courseCount}" placeholder="Credits" step="0.1" min="0">
+        <select id="grade${courseCount}">
+            <option value="">Select Grade</option>
+            <option value="S">S (10 points)</option>
+            <option value="A">A (9 points)</option>
+            <option value="B">B (8 points)</option>
+            <option value="C">C (7 points)</option>
+            <option value="D">D (6 points)</option>
+            <option value="E">E (4 points)</option>
+        </select>
+        <button class="remove-course-btn" onclick="removeCourse(${courseCount})">Remove</button>
+    `;
+    
+    courseInputsDiv.appendChild(courseDiv);
+    
+    // If we have saved data for this course, restore it
+    if (courseData[courseCount]) {
+        document.getElementById(`credit${courseCount}`).value = courseData[courseCount].credit || '';
+        document.getElementById(`grade${courseCount}`).value = courseData[courseCount].grade || '';
+    }
+}
+
+function addMultipleCourses() {
+    var numToAdd = parseInt(document.getElementById("numCoursesToAdd").value);
+    
+    // Validate input
+    if (!numToAdd || numToAdd < 1) {
+        showMessage('Please enter a valid number of courses to add (minimum 1).', 'error');
+        return;
+    }
+    
+    if (numToAdd > 20) {
+        showMessage('Maximum 20 courses can be added at once.', 'error');
+        return;
+    }
+    
+    // Check if total courses would exceed reasonable limit
+    var currentCourses = document.querySelectorAll('.course-row').length;
+    if (currentCourses + numToAdd > 50) {
+        showMessage('Total courses would exceed maximum limit of 50.', 'error');
+        return;
+    }
+    
+    // Add the specified number of courses
+    for (let i = 0; i < numToAdd; i++) {
+        addCourse();
+    }
+    
+    // Show success message
+    var message = numToAdd === 1 ? 'Added 1 course successfully!' : `Added ${numToAdd} courses successfully!`;
+    showMessage(message, 'info');
+    
+    // Reset the input to 1 for next use
+    document.getElementById("numCoursesToAdd").value = 1;
+}
+
+function removeCourse(courseId) {
+    // Save current data before removing
+    saveCourseData();
+    
+    // Remove the course div
+    var courseDiv = document.getElementById(`course-${courseId}`);
+    if (courseDiv) {
+        courseDiv.remove();
+        delete courseData[courseId];
+    }
+    
+    // Recalculate actual course count
+    var remainingCourses = document.querySelectorAll('.course-row').length;
+    courseCount = remainingCourses;
+    updateCourseCounter();
+}
+
+function saveCourseData() {
+    // Save all current course data
+    var courses = document.querySelectorAll('.course-row');
+    courses.forEach(courseDiv => {
+        var courseId = courseDiv.id.replace('course-', '');
+        var creditInput = document.getElementById(`credit${courseId}`);
+        var gradeSelect = document.getElementById(`grade${courseId}`);
+        
+        if (creditInput && gradeSelect) {
+            courseData[courseId] = {
+                credit: creditInput.value,
+                grade: gradeSelect.value
+            };
+        }
+    });
+}
+
+function updateCourseCounter() {
+    document.getElementById('courseCounter').textContent = `Total Courses: ${document.querySelectorAll('.course-row').length}`;
+}
+
+function resetForm() {
+    if (confirm('Are you sure you want to reset all fields? This action cannot be undone.')) {
+        // Clear all course inputs
+        document.getElementById("courseInputs").innerHTML = '';
+        
+        // Reset CGPA inputs
+        var completedCredit = document.getElementById("completedCredit");
+        var currentCGPA = document.getElementById("currentCGPA");
+        if (completedCredit) completedCredit.value = '';
+        if (currentCGPA) currentCGPA.value = '';
+        
+        // Clear result
+        document.getElementById("result").innerHTML = '';
+        
+        // Reset counters and data
+        courseCount = 0;
+        courseData = {};
+        updateCourseCounter();
+        
+        // Show success message
+        showMessage('Form has been reset successfully!', 'info');
+    }
+}
+
+function calculateGrade() {
+    saveCourseData(); // Save current data before calculation
+    
+    var option = document.getElementById("optionSelect").value;
+    var courses = document.querySelectorAll('.course-row');
+    
+    if (courses.length === 0) {
+        showMessage('Please add at least one course to calculate.', 'error');
+        return;
+    }
+    
+    var totalCredits = 0;
+    var totalGradePoints = 0;
+    var validCourses = 0;
+
+    for (let courseDiv of courses) {
+        var courseId = courseDiv.id.replace('course-', '');
+        var creditInput = document.getElementById(`credit${courseId}`);
+        var gradeSelect = document.getElementById(`grade${courseId}`);
+        
+        if (creditInput && gradeSelect) {
+            var credit = parseFloat(creditInput.value);
+            var grade = gradeSelect.value;
+            
+            if (credit > 0 && grade) {
+                var gradePoints = getGradePoints(grade);
+                totalCredits += credit;
+                totalGradePoints += (credit * gradePoints);
+                validCourses++;
+            }
+        }
+    }
+
+    if (validCourses === 0) {
+        showMessage('Please enter valid credits and grades for at least one course.', 'error');
+        return;
+    }
+
+    var resultDiv = document.getElementById("result");
+    
+    if (option === "gpa") {
+        var gpa = totalGradePoints / totalCredits;
+        resultDiv.innerHTML = `
+            <div class="result-title">📊 GPA Calculation Results</div>
+            <div class="result-container">
+                <div class="result-box semester-credits">
+                    <div class="result-label">Total Credits</div>
+                    <div class="result-value">${totalCredits.toFixed(1)}</div>
+                </div>
+                <div class="result-box semester-gpa">
+                    <div class="result-label">Total Grade Points</div>
+                    <div class="result-value">${totalGradePoints.toFixed(1)}</div>
+                </div>
+                <div class="result-box final-gpa">
+                    <div class="result-label">🎯 Your GPA</div>
+                    <div class="result-value">${gpa.toFixed(2)}</div>
+                </div>
+            </div>
+        `;
+    } else if (option === "cgpa") {
+        var completedCredit = parseFloat(document.getElementById("completedCredit").value);
+        var currentCGPA = parseFloat(document.getElementById("currentCGPA").value);
+        
+        if (!completedCredit || !currentCGPA) {
+            showMessage('Please enter both completed credits and current CGPA for CGPA calculation.', 'error');
+            return;
+        }
+        
+        var semesterGPA = totalGradePoints / totalCredits;
+        var cgpa = ((semesterGPA * totalCredits) + (completedCredit * currentCGPA)) / (totalCredits + completedCredit);
+        
+        resultDiv.innerHTML = `
+            <div class="result-title">📊 CGPA Calculation Results</div>
+            <div class="result-container">
+                <div class="result-box semester-gpa">
+                    <div class="result-label">Current Semester GPA</div>
+                    <div class="result-value">${semesterGPA.toFixed(2)}</div>
+                </div>
+                <div class="result-box semester-credits">
+                    <div class="result-label">Current Semester Credits</div>
+                    <div class="result-value">${totalCredits.toFixed(1)}</div>
+                </div>
+                <div class="result-box previous-credits">
+                    <div class="result-label">Previous Completed Credits</div>
+                    <div class="result-value">${completedCredit.toFixed(1)}</div>
+                </div>
+                <div class="result-box previous-cgpa">
+                    <div class="result-label">Previous CGPA</div>
+                    <div class="result-value">${currentCGPA.toFixed(2)}</div>
+                </div>
+                <div class="result-box semester-credits">
+                    <div class="result-label">Current Completed Credits</div>
+                    <div class="result-value">${(totalCredits + completedCredit).toFixed(1)}</div>
+                </div>
+                <div class="result-box final-cgpa">
+                    <div class="result-label">🎯 New CGPA</div>
+                    <div class="result-value">${cgpa.toFixed(2)}</div>
+                </div>
+            </div>
+            ${getCGPAMessage(cgpa, currentCGPA)}
+        `;
+    }
+}
+
+function getCGPAMessage(newCGPA, oldCGPA) {
+    let message = '';
+    let className = '';
+    
+    if (newCGPA < 6.5) {
+        message = '⚠️ Message: Padh Le nhi toh placement and intern me dikkat hogi';
+        className = 'message-warning';
+    } else if (newCGPA >= 7 && oldCGPA < 7) {
+        message = '🎉 Keep it up! Aise hi padhte raho';
+        className = 'message-success';
+    } else if (newCGPA >= 9) {
+        message = '🏆 Topper! Outstanding performance!';
+        className = 'message-topper';
+    } else if (newCGPA >= 8) {
+        message = '⭐ Very good CGPA! Excellent work!';
+        className = 'message-excellent';
+    } else if (newCGPA >= 7.5) {
+        message = '👍 Good CGPA! Keep up the good work!';
+        className = 'message-success';
+    } else if (newCGPA >= 7) {
+        message = '✅ Decent CGPA! You can do better!';
+        className = 'message-success';
+    } else {
+        message = '📚 Focus more on studies! You can improve!';
+        className = 'message-warning';
+    }
+    
+    return `<div class="cgpa-message ${className}">${message}</div>`;
+}
+
+function getGradePoints(grade) {
+    switch (grade.toUpperCase()) {
+        case "S":
+            return 10;
+        case "A":
+            return 9;
+        case "B":
+            return 8;
+        case "C":
+            return 7;
+        case "D":
+            return 6;
+        case "E":
+            return 4;
+        default:
+            return 0;
+    }
+}
+
+function showMessage(message, type) {
+    var resultDiv = document.getElementById("result");
+    var className = type === 'error' ? 'result-error' : 'result-success';
+    resultDiv.innerHTML = `<div class="${className}">${message}</div>`;
+    
+    if (type === 'info') {
+        setTimeout(() => {
+            resultDiv.innerHTML = '';
+        }, 3000);
+    }
+}
+
+// Initialize with one course and set theme
+window.onload = function() {
+    initializeTheme();
+    addCourse();
+    
+    // Recreate stars when window is resized
+    window.addEventListener('resize', createStars);
+};
+</script>
+
+<style>
+.result-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+[data-theme="dark"] .result-error {
+    background-color: #2e1a1a;
+    color: #ef5350;
+    border-color: #d32f2f;
+}
+.result-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+[data-theme="dark"] .result-success {
+    background-color: #1e2e1e;
+    color: #66bb6a;
+    border-color: #388e3c;
+}
+</style>
+
+</body>
+</html>
