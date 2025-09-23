@@ -118,6 +118,178 @@ Here are keywords that you might implicitly cover in the content and metadata, t
 
 ---
 
+1. IIT Madras GPA Calculator
+
+
+2. IITM CGPA Calculator
+
+
+3. IIT Madras Grade Point Average Tool
+
+
+4. GPA CGPA Calculator IITM
+
+
+5. IIT Madras Academic GPA Calculator
+
+
+6. IITM GPA CGPA Online Calculator
+
+
+7. Semester GPA Calculator IIT Madras
+
+
+8. Cumulative CGPA Calculator IITM
+
+
+9. IIT Madras Student CGPA Calculator
+
+
+10. IITM GPA Estimator
+
+
+11. IIT Madras CGPA Predictor
+
+
+12. IITM Transcript Calculator
+
+
+13. Grade Calculator for IIT Madras
+
+
+14. IITM Performance Tracker
+
+
+15. IIT Madras GPA CGPA Converter
+
+
+16. CGPA Calculation Tool IIT Madras
+
+
+17. GPA Calculator IIT Students
+
+
+18. IITM Semester Grade Calculator
+
+
+19. IIT Madras Cumulative GPA Tool
+
+
+20. IITM Academic Score Calculator
+
+
+21. IIT Madras GPA Tracker
+
+
+22. IITM Marks to CGPA Calculator
+
+
+23. Online CGPA Calculator for IIT Madras
+
+
+24. GPA CGPA Calculation IITM Portal
+
+
+25. IIT Madras Student GPA Helper
+
+
+
+
+---
+
+🔗 30 Hashtags
+
+(use for GitHub topics, LinkedIn, Twitter, Insta, Reddit posts)
+
+1. #IITMadras
+
+
+2. #IITM
+
+
+3. #GPACalculator
+
+
+4. #CGPACalculator
+
+
+5. #IITStudents
+
+
+6. #GradeCalculator
+
+
+7. #SemesterGPA
+
+
+8. #CumulativeGPA
+
+
+9. #IITMTools
+
+
+10. #EducationTech
+
+
+11. #StudyHelper
+
+
+12. #CollegeTools
+
+
+13. #FreeCalculator
+
+
+14. #AcademicTools
+
+
+15. #IITMLife
+
+
+16. #StudentResource
+
+
+17. #StudySmart
+
+
+18. #MarksCalculator
+
+
+19. #IITMProjects
+
+
+20. #OpenSourceTool
+
+
+21. #EngineeringStudents
+
+
+22. #CollegeLife
+
+
+23. #StudentCalculator
+
+
+24. #CGPATool
+
+
+25. #GPAEstimator
+
+
+26. #UniversityTools
+
+
+27. #TechForEducation
+
+
+28. #ExamHelper
+
+
+29. #IITMCommunity
+
+
+30. #AcademicCalculator
+
 > Build, update, and share this project to help your peers at IIT Madras. Pull requests welcome!
 
 **Made with ❤️ for IIT Madras students**
