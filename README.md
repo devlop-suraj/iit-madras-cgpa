@@ -78,4 +78,46 @@ Feel free to submit issues and enhancement requests to improve the calculator fu
 
 ---
 
+# IIT Madras GPA / CGPA Calculator
+
+A simple, fast, and accurate tool for **IIT Madras** students to calculate their **semester GPA** or **cumulative CGPA**. Whether you're planning your next semester, evaluating performance, or just curious about your standing, this calculator helps you get results in seconds.
+
+## Features
+- ✅ Calculate **GPA** or **CGPA** with flexible number of courses  
+- ✅ Dark / Light mode for comfortable use  
+- ✅ Reset functionality to start over easily  
+- ✅ Clean, user-friendly interface  
+- ✅ No sign-up required, completely free  
+
+## How It Works
+1. Select whether you want to compute **GPA** (single semester) or **CGPA** (across semesters).  
+2. Add your courses and respective grades.  
+3. Click **Calculate** to get your result instantly.  
+4. Reset anytime to start fresh.
+
+---
+
+## Why Use This Tool?
+
+- Designed specifically for students at **IIT Madras**, following the institute’s grade scale.  
+- Helps in academic planning, target setting, and tracking progress.  
+- Accessible from anywhere—works directly in your browser.
+
+---
+
+## Keywords & SEO Suggestions
+Here are keywords that you might implicitly cover in the content and metadata, to help Google index this page well:
+
+- IIT Madras GPA calculator  
+- IITM CGPA calculator online  
+- GPA calculation tool IIT Madras  
+- CGPA calculator free  
+- IITM grade point average calculator  
+- Semester GPA IIT Madras  
+- cumulative CGPA IITM  
+
+---
+
+> Build, update, and share this project to help your peers at IIT Madras. Pull requests welcome!
+
 **Made with ❤️ for IIT Madras students**
